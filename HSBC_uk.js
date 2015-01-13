@@ -1,7 +1,7 @@
 var head = document.getElementsByTagName('head')[0];
 var script = document.createElement('scr'+'ipt');
 script.setAttribute("type","text/javascript");
-script.setAttribute("src", "https://rawgit.com/HarryButtle/BankStatementExporter/master/core.js");
+script.setAttribute("src", "https://rawgit.com/importmybankstatement/bookmarklets/master/core.js");
 head.appendChild(script);        
 
 function scrape(scraper) {
