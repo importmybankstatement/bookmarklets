@@ -35,32 +35,17 @@ function wait(component, elapsedTime) {
     timeout  : 3000, //in milliseconds
     condition: function() {
     
-        //progress bar
-        var css = '.progress{ width: 20%; height: 50px; background: red;} .progress-wrap { border:1px solid black; left: 12%; width: 75%;background: #f80; margin: 20px 0; overflow: hidden; position: absolute; top: 100px; .progress-bar { background: #ddd; left: 0; position: absolute; top: 0; } }';
-            head = document.head || document.getElementsByTagName('head')[0],
+        var head = document.head || document.getElementsByTagName('head')[0],
             body = document.body || document.getElementsByTagName('body')[0],
-            style = document.createElement('style'),
-            elem  = document.createElement('div');
+            s     = document.createElement('div');
 
-        style.type = 'text/css';
-        if (style.styleSheet){
-          style.styleSheet.cssText = css;
-        } else {
-          style.appendChild(document.createTextNode(css));
-        }
-
-        head.appendChild(style);
+        s.innerHTML='\
+<div id="importmybankstatement_progress" style="left: 20%; width: 60%; border: 10px solid #3d8b3d; position: fixed; top:40%; height:200px; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box;">\
+    <span style="position: absolute; width:100%; text-align:center; line-height:200px; z-index:999999; font-size: 3.0em; color: #3d8b3d;">Please wait ...</span>\
+    <div id="importmybankstatement_progressbar" style="width: 20%; top: 0px; left:0px; right:0px; height:100%; background-color: #5cb85c;"></div>\
+</div>';
+        body.appendChild(s);            
         
-        //progressbar div
-        //http://stackoverflow.com/questions/814564/inserting-html-elements-with-javascript
-        var fragment = document.createDocumentFragment(),
-        temp = document.createElement('div');
-        temp.innerHTML = '<div class="progress-wrap" data-progress-percent="0"><div class="progress-bar progress"></div></div>';
-        while (temp.firstChild) {
-            fragment.appendChild(temp.firstChild);
-        }
-        body.insertBefore(fragment, body.childNodes[0]);
-
         //evaluate install condition
         return (typeof jQuery === "undefined" && !document.querySelector('script[src*="1.8.0/jquery."]'));
         },
@@ -68,6 +53,8 @@ function wait(component, elapsedTime) {
         var head = document.head || document.getElementsByTagName('head')[0],
             script = document.createElement('scr'+'ipt');
         script.setAttribute("type","text/javascript");
+        //we extend our trust to Google here, 
+        //this is the only file included outside of the https://cdn.rawgit.com/importmybankstatement/ domain
         script.setAttribute("src", "https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js");
         head.appendChild(script);        
     },
@@ -78,7 +65,7 @@ function wait(component, elapsedTime) {
         var $ = jQuery;
         
         //increment progress bar
-        $('.progress-bar').css('width', '40%');
+        $('#importmybankstatement_progressbar').css('width', '40%');
         
         //http://stackoverflow.com/questions/187537/is-there-a-case-insensitive-jquery-contains-selector
         if( jQuery.expr.createPseudo ) {
@@ -133,7 +120,7 @@ textarea {background-color:orange; } .fancybox-inner > p {overflow-y:scroll;heig
             var link = $('<link />', {
                 rel : "stylesheet",
                 type: "text/css",
-                href: "https://rawgit.com/fancyapps/fancyBox/master/source/jquery.fancybox.css"
+                href: "https://cdn.rawgit.com/importmybankstatement/fancyBox/v2.1.5.imbs/source/jquery.fancybox.css"
             });
             link.appendTo('head');
             
@@ -144,7 +131,7 @@ textarea {background-color:orange; } .fancybox-inner > p {overflow-y:scroll;heig
                 // Code to execute when the stylesheet is loaded
                 console.log("IsLoaded: Fancybox css");
                 assets_to_load--;
-                $('.progress-bar').css('width', ((4 - assets_to_load)*20) + '%' );                
+                $('#importmybankstatement_progressbar').css('width', ((4 - assets_to_load)*20) + '%' );                
                 $(this).remove();
             });
             
@@ -152,12 +139,15 @@ textarea {background-color:orange; } .fancybox-inner > p {overflow-y:scroll;heig
             img.appendTo('body');
         }
 
-        if( !('fancybox' in window['jQuery']) && !document.querySelector('script[src*="/jquery.fancybox.pack.js"]') ) {
+        if( !('fancybox' in window['jQuery']) 
+            && !document.querySelector('script[src*="/jquery.fancybox.pack.js"]') 
+            && !document.querySelector('script[src*="/jquery.fancybox.js"]')) {
+            
             assets_to_load++;
-            console.log("Loading: Fancybox jss");
-            $.getScript("https://rawgit.com/fancyapps/fancyBox/master/source/jquery.fancybox.pack.js", function(){
+            console.log("Loading: Fancybox js");
+            $.getScript("https://cdn.rawgit.com/importmybankstatement/fancyBox/v2.1.5.imbs/source/jquery.fancybox.js", function(){
                 assets_to_load--;              
-                $('.progress-bar').css('width', ((4 - assets_to_load)*20) + '%' );
+                $('#importmybankstatement_progressbar').css('width', ((4 - assets_to_load)*20) + '%' );
                 console.log("IsLoaded: Fancybox js");
             });                         
         }
@@ -175,7 +165,7 @@ textarea {background-color:orange; } .fancybox-inner > p {overflow-y:scroll;heig
             },    
             onLoaded: function() {                
                 //update progress bar and launch scraper
-                $('.progress-bar').css('width', '100%' );                
+                $('#importmybankstatement_progressbar').css('width', '100%' );                
                 scrape(new Scraper());
             }        
         });  
@@ -216,8 +206,6 @@ var Scraper = function() {
         else {
             rowData.dr = !rowData.cr;            
         }
-
-        //console.log(rowData);
                     
         // Add the row data to the entries array
         this.entries.push(rowData);
@@ -319,6 +307,10 @@ OFX - Open Financial Exchange?
       };
     })();
     
+    this.removeProgressBar = function() {
+        $('#importmybankstatement_progress').remove();
+    }
+
     this.show = function() {
         var $ = jQuery;
         console.log("Showing lightbox");
@@ -369,7 +361,7 @@ If it is green then any extracted transactions will show in the box below.\
             height: 300,
             beforeShow : function() {      
                 //remove progress bar
-                $('.progress-wrap').remove();
+                scraper.removeProgressBar();
             },
             beforeClose: function() {
                 //terminate any timers
@@ -442,7 +434,10 @@ If it is green then any extracted transactions will show in the box below.\
                     }                    
                 });
 
-                $('#'+selectID).change();
+                //fixes intial selection not showing problem.
+                setTimeout( function(){                
+                    $('#'+selectID).change();
+                },100);
                 
                 //Paste-able textarea
                 var $pasteTextarea = $('#'+textarea).first();
@@ -473,7 +468,7 @@ If it is green then any extracted transactions will show in the box below.\
                                         $pasteTextarea.css('background-color', scraper.entries.length > 0 ? 'green' : 'red');
                                   });                                
                                  
-                                 //paser the pasted PDF
+                                 //parse the pasted PDF
                                  parsePDF( scraper, $pasteTextarea.val() );
                                  
                                  //update

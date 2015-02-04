@@ -1,7 +1,7 @@
 var head = document.getElementsByTagName('head')[0];
 var script = document.createElement('scr'+'ipt');
 script.setAttribute("type","text/javascript");
-script.setAttribute("src", "https://rawgit.com/importmybankstatement/bookmarklets/master/core.js");
+script.setAttribute("src", "https://cdn.rawgit.com/importmybankstatement/bookmarklets/v1.0.0/core.js");
 head.appendChild(script);        
 
 //http://stackoverflow.com/questions/298750/how-do-i-select-text-nodes-with-jquery
@@ -33,14 +33,14 @@ function scrape(scraper) {
 
     for(var i = 0; i < nodes.length; i++) {
         var node = nodes[i];
-        var text = $(node).text().replace(re1, 'A').replace(re2, '9');
+        var text = '['+i+']'+$(node).text().replace(re1, 'A').replace(re2, '9');
         node.data = text;
     }
     
     console.log("Showing lightbox");
 
     //remove progress bar
-    $('.progress-wrap').remove();
+    scraper.removeProgressBar();
     
     var scraper = scraper;
     var pID = scraper.guid(), 
@@ -54,8 +54,6 @@ function scrape(scraper) {
     display_csv  = '<p id="'+pID+'" class=\"csv\"><textarea cols=80 style="width: 100%; height: 100%; box-sizing: border-box; border: 1px solid #FF0000; resize:none;">'+anonymized_content+'</textarea></p>';
     display_csv += '<div>';
     display_csv += '<button id="'+downloadID+'">Download</button>';
-//    display_csv += '&nbsp;&nbsp;&nbsp;';
-//    display_csv += '<span id="'+mailRef+'"></span>';
     display_csv += '</div>';
     
     // show csv content in fancybox
@@ -67,11 +65,6 @@ function scrape(scraper) {
         beforeClose: function() {
         },
         afterShow: function() {
-        
-            //http://stackoverflow.com/questions/10219781/javascript-adding-linebreak-in-mailto-body
-            //http://stackoverflow.com/questions/5617260/how-to-insert-html-as-text
-//            var body = encodeURIComponent( anonymized_content.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') );
-//            $('#' + mailRef).empty().append('<a href="mailto:?subject=anonymized%20statement&body='+body+'" target="_blank">email file</a>');
                                 
             $('#'+downloadID).click(function() {
             
