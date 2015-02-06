@@ -1,8 +1,14 @@
-var head = document.getElementsByTagName('head')[0];
-var script = document.createElement('scr'+'ipt');
+//http://stackoverflow.com/a/1706977
+var scripts = document.getElementsByTagName('script'),
+    this_url = scripts[scripts.length-1].src,
+    this_baseurl = this_url.substring(0, this_url.lastIndexOf("/"));
+    
+var head = document.getElementsByTagName('head')[0],
+    script = document.createElement('scr'+'ipt');
+    
 script.setAttribute("type","text/javascript");
-script.setAttribute("src", "https://cdn.rawgit.com/importmybankstatement/bookmarklets/v1.0.0/core.js");
-head.appendChild(script);        
+script.setAttribute("src", this_baseurl+"/core.js");
+head.appendChild(script);            
 
 //http://stackoverflow.com/questions/298750/how-do-i-select-text-nodes-with-jquery
 function getTextNodesIn(node, includeWhitespaceNodes) {

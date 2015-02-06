@@ -1,3 +1,5 @@
+window.console = window.console || {};
+window.console.log = window.console.log || function(){};
     
 function wait(component, elapsedTime) {
 
@@ -449,7 +451,7 @@ If it is green then any extracted transactions will show in the box below.\
                     $.pasteWatcher = { 
                         timer: setInterval( function() {
 
-                            //interval may have been queued and the previous interval may have cleaned the timer: see http://ejohn.org/blog/how-javascript-timers-work/
+                            //interval may have been queued and the previous interval may have cleaned the timer: see http://ejohn.org/bconsole.log/how-javascript-timers-work/
                             if( !$.pasteWatcher ) return;
                             
                             //If text has been pasted
