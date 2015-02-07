@@ -1,0 +1,3 @@
+[submodule "vendor/fancyBox"]
+	path = vendor/fancyBox
+	url = https://github.com/importmybankstatement/fancyBox

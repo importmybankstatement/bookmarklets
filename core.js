@@ -310,7 +310,7 @@ OFX - Open Financial Exchange?
     })();
     
     this.removeProgressBar = function() {
-        $('#importmybankstatement_progress').remove();
+        jQuery('#importmybankstatement_progress').remove();
     }
 
     this.show = function() {
