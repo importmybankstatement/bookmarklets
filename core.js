@@ -1,5 +1,9 @@
 window.console = window.console || {};
 window.console.log = window.console.log || function(){};
+
+var scripts = document.getElementsByTagName('script'),
+    this_url = scripts[scripts.length-1].src,
+    this_baseurl = this_url.substring(0, this_url.lastIndexOf("/"));
     
 function wait(component, elapsedTime) {
 
@@ -42,8 +46,8 @@ function wait(component, elapsedTime) {
             s     = document.createElement('div');
 
         s.innerHTML='\
-<div id="importmybankstatement_progress" style="left: 20%; width: 60%; border: 10px solid #3d8b3d; position: fixed; top:40%; height:200px; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box;">\
-    <span style="position: absolute; width:100%; text-align:center; line-height:200px; z-index:999999; font-size: 3.0em; color: #3d8b3d;">Please wait ...</span>\
+<div id="importmybankstatement_progress" style="z-index:999999; left: 20%; width: 60%; border: 10px solid #3d8b3d; position: fixed; top:40%; height:200px; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box;">\
+    <span style="position: absolute; width:100%; text-align:center; line-height:200px; font-size: 3.0em; color: #3d8b3d;">Please wait ...</span>\
     <div id="importmybankstatement_progressbar" style="width: 20%; top: 0px; left:0px; right:0px; height:100%; background-color: #5cb85c;"></div>\
 </div>';
         body.appendChild(s);            
@@ -51,18 +55,23 @@ function wait(component, elapsedTime) {
         //evaluate install condition
         return (typeof jQuery === "undefined" && !document.querySelector('script[src*="1.8.0/jquery."]'));
         },
+        
     load     : function() {
+    
         var head = document.head || document.getElementsByTagName('head')[0],
             script = document.createElement('scr'+'ipt');
         script.setAttribute("type","text/javascript");
+        
         //we extend our trust to Google here, 
         //this is the only file included outside of the https://cdn.rawgit.com/importmybankstatement/ domain
         script.setAttribute("src", "https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js");
         head.appendChild(script);        
     },
+    
     isLoaded : function() {           
         return (typeof jQuery != "undefined");
     },
+    
     onLoaded: function() {        
         var $ = jQuery;
         
@@ -122,7 +131,7 @@ textarea {background-color:orange; } .fancybox-inner > p {overflow-y:scroll;heig
             var link = $('<link />', {
                 rel : "stylesheet",
                 type: "text/css",
-                href: "https://cdn.rawgit.com/importmybankstatement/fancyBox/v2.1.5.imbs/source/jquery.fancybox.css"
+                href: this_baseurl+"/vendor/fancyBox/source/jquery.fancybox.css"+"?cb="+Date.now()
             });
             link.appendTo('head');
             
@@ -131,9 +140,11 @@ textarea {background-color:orange; } .fancybox-inner > p {overflow-y:scroll;heig
             })
             .error( function() {
                 // Code to execute when the stylesheet is loaded
-                console.log("IsLoaded: Fancybox css");
+                console.log("IsLoaded: Fancybox css "+$(this).attr('src'));
                 assets_to_load--;
                 $('#importmybankstatement_progressbar').css('width', ((4 - assets_to_load)*20) + '%' );                
+                
+                //remove the img element
                 $(this).remove();
             });
             
@@ -310,7 +321,7 @@ OFX - Open Financial Exchange?
     })();
     
     this.removeProgressBar = function() {
-        jQuery('#importmybankstatement_progress').remove();
+        window.jQuery('#importmybankstatement_progress').remove();
     }
 
     this.show = function() {
