@@ -13,7 +13,7 @@ function wait(component, elapsedTime) {
             return component.onLoaded && component.onLoaded.call();
         }
         
-        if( elapsedTime >= component.timeout ) {
+        if( elapsedTime >= (component.timeout || 4000 /*default timeout*/) ) {
             console.log( "Timeout: ", component);
             return component.onTimeout && component.onTimeout.call();
         }
@@ -38,7 +38,6 @@ function wait(component, elapsedTime) {
 }
 (new wait({
     name  : "jQuery 1.8.0",
-    timeout  : 3000, //in milliseconds
     condition: function() {
     
         var head = document.head || document.getElementsByTagName('head')[0],
@@ -158,7 +157,9 @@ textarea {background-color:orange; } .fancybox-inner > p {overflow-y:scroll;heig
             
             assets_to_load++;
             console.log("Loading: Fancybox js");
-            $.getScript("https://cdn.rawgit.com/importmybankstatement/fancyBox/v2.1.5.imbs/source/jquery.fancybox.js", function(){
+            
+            //$.getScript("https://cdn.rawgit.com/importmybankstatement/fancyBox/v2.1.5.imbs/source/jquery.fancybox.js", function(){
+            $.getScript(this_baseurl+"/vendor/fancyBox/source/jquery.fancybox.js", function(){
                 assets_to_load--;              
                 $('#importmybankstatement_progressbar').css('width', ((4 - assets_to_load)*20) + '%' );
                 console.log("IsLoaded: Fancybox js");
