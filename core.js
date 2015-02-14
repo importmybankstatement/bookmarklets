@@ -130,7 +130,7 @@ textarea {background-color:orange; } .fancybox-inner > p {overflow-y:scroll;heig
             var link = $('<link />', {
                 rel : "stylesheet",
                 type: "text/css",
-                href: this_baseurl+"/vendor/fancyBox/source/jquery.fancybox.css"+"?cb="+Date.now()
+                href: this_baseurl+"/vendor/fancyBox/jquery.fancybox.css"+"?cb="+Date.now()
             });
             link.appendTo('head');
             
@@ -159,7 +159,7 @@ textarea {background-color:orange; } .fancybox-inner > p {overflow-y:scroll;heig
             console.log("Loading: Fancybox js");
             
             //$.getScript("https://cdn.rawgit.com/importmybankstatement/fancyBox/v2.1.5.imbs/source/jquery.fancybox.js", function(){
-            $.getScript(this_baseurl+"/vendor/fancyBox/source/jquery.fancybox.js", function(){
+            $.getScript(this_baseurl+"/vendor/fancyBox/jquery.fancybox.js", function(){
                 assets_to_load--;              
                 $('#importmybankstatement_progressbar').css('width', ((4 - assets_to_load)*20) + '%' );
                 console.log("IsLoaded: Fancybox js");
